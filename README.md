@@ -1,6 +1,6 @@
 # 🏈 Fantasy Football League Database
 
-## Team Name: Group 1
+## Group 1
 
 ### Team Members
 | Name | GitHub |
