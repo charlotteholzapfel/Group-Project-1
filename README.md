@@ -69,22 +69,22 @@ The database supports tracking of league activity, draft history, player perform
 | Column | Data Type | Key | Description |
 |--------|-----------|-----|-------------|
 | leagueID | INT | PK | Unique identifier for each league |
-| leagueName | VARCHAR(100) | | Name of the fantasy league |
-| seasonYear | INT | | The NFL season year (e.g., 2024) |
+| leagueName | VARCHAR(45) | | Name of the fantasy league |
+| seasonYear | VARCHAR(4) | | The NFL season year (e.g., 2024) |
 
 ### User
 | Column | Data Type | Key | Description |
 |--------|-----------|-----|-------------|
 | userID | INT | PK | Unique identifier for each user |
-| firstName | VARCHAR(50) | | User's first name |
-| lastName | VARCHAR(50) | | User's last name |
-| email | VARCHAR(100) | | User's email address |
+| firstName | VARCHAR(45) | | User's first name |
+| lastName | VARCHAR(45) | | User's last name |
+| email | VARCHAR(45) | | User's email address |
 
 ### Team
 | Column | Data Type | Key | Description |
 |--------|-----------|-----|-------------|
 | teamID | INT | PK | Unique identifier for each team |
-| teamName | VARCHAR(100) | | Name of the fantasy team |
+| teamName | VARCHAR(45) | | Name of the fantasy team |
 | userID | INT | FK (User) | The user who owns this team |
 | leagueID | INT | FK (League) | The league this team belongs to |
 
@@ -92,17 +92,18 @@ The database supports tracking of league activity, draft history, player perform
 | Column | Data Type | Key | Description |
 |--------|-----------|-----|-------------|
 | playerID | INT | PK | Unique identifier for each player |
-| playerName | VARCHAR(100) | | Full name of the NFL player |
-| position | VARCHAR(10) | | Player's position (QB, RB, WR, TE, K, DEF) |
-| nflTeam | VARCHAR(50) | | Real NFL team the player plays for |
+| playerName | VARCHAR(45) | | Full name of the NFL player |
+| position | VARCHAR(45) | | Player's position (QB, RB, WR, TE, K, DEF) |
+| teamID | INT | FK (Team) | Real NFL team the player plays for |
+| captainID | INT | FK (Player) | The captain of each player |
 
 ### WeeklyStats
 | Column | Data Type | Key | Description |
 |--------|-----------|-----|-------------|
 | statsID | INT | PK | Unique identifier for each stats record |
 | weekNumber | INT | | NFL week number (1–18) |
-| pointsScored | DECIMAL(5,2) | | Fantasy points scored that week |
-| playerID | INT | FK (Player) | The player these stats belong to |
+| pointsScored | INT | | Fantasy points scored that week |
+| playerID | INT | FK (Player)| The player these stats belong to |
 
 ### DraftPick
 | Column | Data Type | Key | Description |
@@ -120,8 +121,8 @@ The database supports tracking of league activity, draft history, player perform
 | weekNumber | INT | | The week the game was played |
 | homeTeamID | INT | FK (Team) | The home/first team |
 | awayTeamID | INT | FK (Team) | The away/second team |
-| homeScore | DECIMAL(6,2) | | Fantasy points scored by home team |
-| awayScore | DECIMAL(6,2) | | Fantasy points scored by away team |
+| homeScore | INT | | Fantasy points scored by home team |
+| awayScore | INT | | Fantasy points scored by away team |
 | winnerTeamID | INT | FK (Team) | The team that won the game |
 | leagueID | INT | FK (League) | The league this game belongs to |
 
