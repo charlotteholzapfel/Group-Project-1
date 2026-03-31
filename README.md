@@ -5,12 +5,11 @@
 ## Team Members
 
 | Name | GitHub |
-|------|--------|
-| Elher Zemihret | [Link to GitHub] |
+| --- | --- |
+| Elher Zemihret | https://github.com/Ezemihret/SQLGROUPPPROJECT |
 | Allison Davis | https://github.com/AllisonDavis149/GP1?tab=readme-ov-file#gp1 |
 | Coen Cardelli | https://github.com/CoenCardelli/SQL |
 | Charlotte Holzapfel | https://github.com/charlotteholzapfel/Group-Project-1 |
-
 
 ---
 
@@ -30,21 +29,35 @@ The database supports tracking of league activity, draft history, player perform
 
 ### Explanation of the Data Model
 
-**Leagues** sits at the top of the hierarchy. A league has many Teams, but each Team belongs to exactly one League (1:M). A league is identified by a unique `leagueID` and stores the league name and season year.
 
-**Users** represents any person participating in the platform. A single User can manage multiple Teams across different leagues (1:M). Users are identified by `userID` and store basic contact info (name, email).
-
-**Teams** is the central entity — it connects a User to a League via foreign keys `userID` and `leagueID`. Each Team participates in many Games, initiates many Transactions, and makes many DraftPicks (all 1:M).
-
-**Players** represents a real NFL athlete. A Player can appear in many WeeklyStats records (one per week), many DraftPicks (across different leagues/seasons), and many Transactions (all 1:M). Players also have a `teamID` (FK to Teams), an `nflTeam` text label storing the real NFL franchise name (e.g., "Chiefs"), and a self-referencing `captainID` that can designate a team captain relationship.
-
-**WeeklyStats** captures a Player's fantasy points for a specific week. Each record is tied to one Player and one week number, and stores `pointsScored`.
 
 **DraftPicks** records which Team selected which Player, in what round and pick number. It links Team and Player (M:1 to each).
 
+
 **Games** records a head-to-head matchup between two Teams for a given week, storing the score for each side and the winner. The `homeTeamID`, `awayTeamID`, and `winnerTeamID` are all foreign keys back to Teams.
 
+
+**Leagues** sits at the top of the hierarchy. A league has many Teams, but each Team belongs to exactly one League (1:M). A league is identified by a unique `leagueID` and stores the league name and season year.
+
+
+**Players** represents a real NFL athlete. A Player can appear in many WeeklyStats records (one per week), many DraftPicks (across different leagues/seasons), and many Transactions (all 1:M). Players also have a `teamID` (FK to Teams), an `nflTeam` text label storing the real NFL franchise name (e.g., "Chiefs"), and a self-referencing `captainID` that can designate a team captain relationship.
+
+
+**Teams** is the central entity — it connects a User to a League via foreign keys `userID` and `leagueID`. Each Team participates in many Games, initiates many Transactions, and makes many DraftPicks (all 1:M).
+
+
 **Transactions** logs adds, drops, or trades. Each transaction is tied to a Team and a Player, along with the type and the week it occurred.
+
+
+**Users** represents any person participating in the platform. A single User can manage multiple Teams across different leagues (1:M). Users are identified by `userID` and store basic contact info (name, email).
+
+
+**WeeklyStats** captures a Player's fantasy points for a specific week. Each record is tied to one Player and one week number, and stores `pointsScored`.
+
+
+
+
+
 
 ### What the database supports:
 - Tracking users, teams, leagues, and seasons
@@ -64,75 +77,99 @@ The database supports tracking of league activity, draft history, player perform
 
 ## Data Dictionary
 
-### Leagues
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| leagueID | INT | PK | Unique identifier for each league |
-| leagueName | VARCHAR(45) | | Name of the fantasy league |
-| seasonYear | VARCHAR(4) | | The NFL season year (e.g., '2024') |
-
-### Users
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| userID | INT | PK | Unique identifier for each user |
-| firstName | VARCHAR(45) | | User's first name |
-| lastName | VARCHAR(45) | | User's last name |
-| email | VARCHAR(45) | | User's email address |
-
-### Teams
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| teamID | INT | PK | Unique identifier for each fantasy team |
-| teamName | VARCHAR(45) | | Name of the fantasy team |
-| userID | INT | FK (Users) | The user who owns this team |
-| leagueID | INT | FK (Leagues) | The league this team belongs to |
-
-### Players
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| playerID | INT | PK | Unique identifier for each NFL player |
-| playerName | VARCHAR(45) | | Full name of the NFL player |
-| position | VARCHAR(45) | | Player's position (QB, RB, WR, TE, K, DEF) |
-| teamID | INT | FK (Teams) | The fantasy team the player is rostered on |
-| captainID | INT | FK (Players) | Self-referencing key to designate a captain relationship |
-
-### WeeklyStats
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| statsID | INT | PK | Unique identifier for each stats record |
-| weekNumber | INT | | NFL week number (1–18) |
-| pointsScored | INT | | Fantasy points scored that week |
-| playerID | INT | FK (Players) | The player these stats belong to |
+---
 
 ### DraftPicks
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| pickID | INT | PK | Unique identifier for each draft pick |
-| roundNumber | INT | | The draft round (e.g., 1–15) |
-| pickNumber | INT | | The overall pick number |
-| playerID | INT | FK (Players) | The player who was drafted |
-| teamID | INT | FK (Teams) | The team that made this pick |
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| pickID | Unique sequential number identifying each draft pick | Numeric | | | PK |
+| roundNumber | The round number within the draft in which the pick was made (e.g., 1–15) | Numeric | | | |
+| pickNumber | The overall pick number within the draft | Numeric | | | |
+| playerID | Indicates the player who was selected with this pick | Numeric | | | FK (ref. Players) |
+| teamID | Indicates the fantasy team that made this draft pick | Numeric | | | FK (ref. Teams) |
+
+---
 
 ### Games
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| gameID | INT | PK | Unique identifier for each game |
-| weekNumber | INT | | The week the game was played |
-| homeTeamID | INT | FK (Teams) | The home/first team |
-| awayTeamID | INT | FK (Teams) | The away/second team |
-| homeScore | INT | | Fantasy points scored by home team |
-| awayScore | INT | | Fantasy points scored by away team |
-| leagueID | INT | FK (Leagues) | The league this game belongs to |
-| winnerTeamID | INT | FK (Teams) | The team that won the game |
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| gameID | Unique sequential number identifying each game | Numeric | | | PK |
+| weekNumber | The NFL week number during which the game was played (1–18) | Numeric | | | |
+| homeTeamID | Indicates the home team participating in the matchup | Numeric | | | FK (ref. Teams) |
+| awayTeamID | Indicates the away team participating in the matchup | Numeric | | | FK (ref. Teams) |
+| homeScore | Total fantasy points scored by the home team during the game | Numeric | | | |
+| awayScore | Total fantasy points scored by the away team during the game | Numeric | | | |
+| leagueID | Indicates the league in which the game was played | Numeric | | | FK (ref. Leagues) |
+| winnerTeamID | Indicates the team that won the game | Numeric | | | FK (ref. Teams) |
+
+---
+
+### Leagues
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| leagueID | Unique sequential number identifying each fantasy league | Numeric | | | PK |
+| leagueName | The name given to the fantasy football league | Text | 45 | | |
+| seasonYear | The NFL season year the league is associated with | Text | 4 | 9999 | |
+
+---
+
+### Players
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| playerID | Unique sequential number identifying each NFL player | Numeric | | | PK |
+| playerName | The full name of the real NFL player | Text | 45 | | |
+| position | The player's position on the field (QB, RB, WR, TE, K, DEF) | Text | 45 | | |
+| teamID | Indicates the fantasy team the player is currently rostered on | Numeric | | | FK (ref. Teams) |
+| captainID | Indicates the player designated as team captain; references itself | Numeric | | | FK (ref. Players) |
+
+---
+
+### Teams
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| teamID | Unique sequential number identifying each fantasy team | Numeric | | | PK |
+| teamName | The name given to the fantasy football team | Text | 45 | | |
+| userID | Indicates the user who owns and manages this team | Numeric | | | FK (ref. Users) |
+| leagueID | Indicates the league that this team belongs to | Numeric | | | FK (ref. Leagues) |
+
+---
 
 ### Transactions
-| Column | Data Type | Key | Description |
-|--------|-----------|-----|-------------|
-| transactionID | INT | PK | Unique identifier for each transaction |
-| transactionType | VARCHAR(45) | | Type: ADD, DROP, or TRADE |
-| weekNumber | INT | | The week the transaction occurred |
-| teamID | INT | FK (Teams) | The team making the transaction |
-| playerID | INT | FK (Players) | The player involved in the transaction |
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| transactionID | Unique sequential number identifying each roster transaction | Numeric | | | PK |
+| transactionType | The type of transaction performed on the roster: ADD, DROP, or TRADE | Text | 45 | | |
+| weekNumber | The NFL week number during which the transaction occurred | Numeric | | | |
+| teamID | Indicates the team that initiated the transaction | Numeric | | | FK (ref. Teams) |
+| playerID | Indicates the player involved in the transaction | Numeric | | | FK (ref. Players) |
+
+---
+
+### Users
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| userID | Unique sequential number identifying each platform user | Numeric | | | PK |
+| firstName | The first name of the user | Text | 45 | | |
+| lastName | The last name of the user | Text | 45 | | |
+| email | The email address of the user | Text | 45 | aaaaaaaaa@aaaaa.aaa | |
+
+---
+
+### WeeklyStats
+
+| Column Name | Description | Data Type | Size | Format | Key? |
+| --- | --- | --- | --- | --- | --- |
+| statsID | Unique sequential number identifying each weekly stats record | Numeric | | | PK |
+| weekNumber | The NFL week number the stats were recorded for (1–18) | Numeric | | | |
+| pointsScored | The total fantasy points the player scored during that week | Numeric |  | | |
+| playerID | Indicates the player that these weekly stats belong to | Numeric | | | FK (ref. Players) |
 
 ---
 
@@ -141,16 +178,16 @@ The database supports tracking of league activity, draft history, player perform
 ### Query Feature Matrix
 
 | Feature | Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 |
-|---------|----|----|----|----|----|----|----|----|----|----|
-| Multiple Table Join | X | X | X | | X | X | X | | X | X |
-| Subquery | | | X | | | X | | | | X |
-| Correlated Subquery | | | | | | | | | | X |
-| GROUP BY | X | X | X | X | | X | X | X | X | |
-| GROUP BY with HAVING | | X | | | | | X | | | |
-| Multi-condition WHERE | | | | X | X | | | X | | X |
-| Built-in Functions / Calculated Field | X | X | X | X | | X | X | X | X | X |
-| REGEXP | | | | | | | | X | | |
-| NOT EXISTS | | | | | X | | | | | |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Multiple Table Join | X | X | X |  | X | X | X |  | X | X |
+| Subquery |  |  | X |  |  | X |  |  |  | X |
+| Correlated Subquery |  |  |  |  |  |  |  |  |  | X |
+| GROUP BY | X | X | X | X |  | X | X | X | X |  |
+| GROUP BY with HAVING |  | X |  |  |  |  | X |  |  |  |
+| Multi-condition WHERE |  |  |  | X | X |  |  | X |  | X |
+| Built-in Functions / Calculated Field | X | X | X | X |  | X | X | X | X | X |
+| REGEXP |  |  |  |  |  |  |  | X |  |  |
+| NOT EXISTS |  |  |  |  | X |  |  |  |  |  |
 
 ---
 
@@ -171,6 +208,7 @@ LIMIT 5;
 ```
 
 **Result:**
+
 ```
 + --------------- + ------------- + -------------- +
 | playerName      | position      | avgPoints      |
@@ -183,6 +221,7 @@ LIMIT 5;
 + --------------- + ------------- + -------------- +
 5 rows
 ```
+
 ---
 
 ### Q2 — Teams with More Than 3 Transactions in a Season
@@ -205,6 +244,7 @@ ORDER BY totalTransactions DESC;
 ```
 
 **Result:**
+
 ```
 + ------------- + -------------- + ------------- + ---------------------- +
 | teamName      | firstName      | lastName      | totalTransactions      |
@@ -243,7 +283,8 @@ HAVING AVG(WeeklyStats.pointsScored) < (
 ORDER BY avgPoints ASC;
 ```
 
-**Result:** 
+**Result:**
+
 ```
 + --------------- + ------------- + ------------- + -------------- +
 | playerName      | position      | teamName      | avgPoints      |
@@ -265,6 +306,7 @@ ORDER BY avgPoints ASC;
 + --------------- + ------------- + ------------- + -------------- +
 14 rows
 ```
+
 ---
 
 ### Q4 — Weekly Points Scored by Each Team for a Specific Week
@@ -286,6 +328,7 @@ ORDER BY totalPoints DESC;
 ```
 
 **Result:**
+
 ```
 + ------------- + ---------------- +
 | teamName      | totalPoints      |
@@ -301,6 +344,7 @@ ORDER BY totalPoints DESC;
 + ------------- + ---------------- +
 8 rows
 ```
+
 ---
 
 ### Q5 — Teams That Have Never Made a Transaction
@@ -324,6 +368,7 @@ WHERE NOT EXISTS (
 ```
 
 **Result:**
+
 ```
 + ------------- + -------------- + ------------- + ---------- +
 | teamName      | firstName      | lastName      | email      |
@@ -369,6 +414,7 @@ ORDER BY wins DESC;
 ```
 
 **Result:**
+
 ```
 + ------------- + --------- + ----------- +
 | teamName      | wins      | losses      |
@@ -405,6 +451,7 @@ ORDER BY DraftPicks.roundNumber ASC;
 ```
 
 **Result:**
+
 ```
 + ---------------- + ------------------- + ---------------------- +
 | roundNumber      | playersDrafted      | avgPointsPerRound      |
@@ -437,6 +484,7 @@ ORDER BY Players.position, avgPoints DESC;
 ```
 
 **Result:**
+
 ```
 + --------------- + ------------- + -------------- +
 | playerName      | position      | avgPoints      |
@@ -464,6 +512,7 @@ ORDER BY Players.position, avgPoints DESC;
 + --------------- + ------------- + -------------- +
 20 rows
 ```
+
 ---
 
 ### Q9 — Users Who Manage Teams in Multiple Leagues
@@ -486,6 +535,7 @@ ORDER BY numberOfTeams DESC;
 ```
 
 **Result:**
+
 ```
 + ----------- + -------------- + ------------- + ---------- + ------------------ +
 | userID      | firstName      | lastName      | email      | numberOfTeams      |
@@ -495,6 +545,7 @@ ORDER BY numberOfTeams DESC;
 + ----------- + -------------- + ------------- + ---------- + ------------------ +
 2 rows
 ```
+
 ---
 
 ### Q10 — Players Outperforming Their Own Season Average in the Latest Week
@@ -522,7 +573,8 @@ AND WeeklyStats.pointsScored > (
 ORDER BY WeeklyStats.pointsScored DESC;
 ```
 
-**Result:** 
+**Result:**
+
 ```
 + --------------- + ------------- + --------------- + --------------------- +
 | playerName      | position      | weekNumber      | latestWeekPoints      |
@@ -541,6 +593,7 @@ ORDER BY WeeklyStats.pointsScored DESC;
 + --------------- + ------------- + --------------- + --------------------- +
 11 rows
 ```
+
 ---
 
 ## Database Information
@@ -555,4 +608,3 @@ ORDER BY WeeklyStats.pointsScored DESC;
 - Foreign key constraints are enforced to maintain referential integrity
 - The data model was designed to be scalable across multiple seasons by including `seasonYear` in the Leagues table
 - `captainID` in the Players table is a self-referencing foreign key allowing designation of a team captain
-
