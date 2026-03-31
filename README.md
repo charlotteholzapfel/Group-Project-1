@@ -25,7 +25,8 @@ The database supports tracking of league activity, draft history, player perform
 
 ## Data Model
 
-![Data Model](data_model.png)
+![Data Model]<img width="780" height="647" alt="data_model" src="https://github.com/user-attachments/assets/0cb87d90-3ed9-45d2-b4f3-baa06c6f5737" />
+
 
 ### Explanation of the Data Model
 
